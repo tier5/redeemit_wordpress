@@ -1,0 +1,285 @@
+<?php
+
+
+$deals_categories = "SELECT L1.cat_name, L1.id AS cat_id, L2.id AS subcat_id, L2.cat_name AS sub_cat 
+  FROM reedemer_category L1 LEFT OUTER JOIN reedemer_category L2 ON L2.parent_id = L1.id WHERE L1.id='72' ORDER BY L1.id ASC";
+
+
+/*$all_categories = "SELECT L1.cat_name, L1.id AS cat_id, L2.id AS subcat_id, L2.cat_name AS sub_cat 
+  FROM reedemer_category L1 LEFT OUTER JOIN reedemer_category L2 ON L2.parent_id = L1.id WHERE L1.parent_id = 0 ORDER BY L1.id ASC";
+*/
+
+//$all_categories =  "SELECT * FROM reedemer_category WHERE status='1'";
+
+/*
+$all_categories ="SELECT L1.cat_name, L1.id AS cat_id, L2.id AS subcat_id, L2.cat_name AS sub_cat 
+  FROM reedemer_category L1 LEFT OUTER JOIN reedemer_category L2 ON L1.id = L2.parent_id GROUP BY L1.cat_name HAVING COUNT(L1.cat_name)>1";
+*/
+
+$all_categories = "SELECT L1.cat_name, L1.status AS cat_status, L2.parent_id AS cat_parent_id, L1.id AS cat_id, L2.id AS subcat_id, L2.cat_name AS sub_cat 
+  FROM reedemer_category L1 LEFT OUTER JOIN reedemer_category L2 ON L1.id = L2.parent_id WHERE L1.status='1' AND L2.parent_id!='0'GROUP BY L1.cat_name HAVING COUNT(L1.cat_name)>1";
+
+$all_category = $wpdb->get_results($all_categories);
+
+
+
+$all_brands ="SELECT * FROM users WHERE status='1' AND type='2'";
+$all_brand = $wpdb->get_results($all_brands);
+
+?>
+<!-- <div class="box top-filter">
+                    <h3>Expired</h3>
+                    <div class="example">
+                      <div class="slider-wrapper">
+                        <input type="text" class="js-decimal" />
+                        <div id="js-display-decimal" class="display-box"></div>
+                      </div>
+                    </div>
+                </div> -->
+               
+                <div class="box category-list">
+                    <h3>Category</h3>
+                    <ul id="nav">
+
+                    <?php 
+                    foreach($all_category as $all_cat) 
+                        { 
+
+                            if($all_cat->subcat_id==NULL)
+
+                                {
+
+                            ?>
+                        
+
+            
+            <li class="all_catrowsMain" id="<?php echo $all_cat->cat_id; ?>">
+            <a href="#" id="<?php echo $all_cat->cat_id; ?>"><span>
+                            
+            <?php
+            $offer_count0 = mysql_num_rows(mysql_query("select * from reedemer_offer where status='1' AND cat_id='".$all_cat->cat_id."'"));
+            echo $offer_count0;?></span><?php echo $all_cat->cat_name; ?></a>
+            </li>
+
+
+                       
+                        
+                        <?php 
+                                } 
+
+                                else
+                                        { ?>
+
+                                            <li class="all_catrowsMain">
+            <a href="#" cat_val="<?php echo $all_cat->cat_id; ?>" ><span>
+                            
+            <?php
+            $offer_count0 = mysql_num_rows(mysql_query("select * from reedemer_offer where status='1' AND cat_id='".$all_cat->cat_id."'"));
+            echo $offer_count0;?></span><?php echo $all_cat->cat_name; ?></a>
+            
+           
+           <ul class="subcat-dropdown" id="subnav">
+
+           <?php 
+
+           /* $deals_categories = "SELECT M1.cat_name, M1.id AS cat_id, M2.id AS subcat_id, M2.cat_name AS sub_cat 
+  FROM reedemer_category L1 LEFT OUTER JOIN reedemer_category M2 ON M2.parent_id = M1.id WHERE M1.parent_id='".$all_cat->cat_id."' ORDER BY M1.id ASC"; */
+
+  $deals_categories = "SELECT id, cat_name from reedemer_category where parent_id='".$all_cat->cat_id."'";
+
+                $deals_category = $wpdb->get_results($deals_categories);
+
+                foreach($deals_category as $deals) {
+
+           ?>
+            
+
+                        <li class="all_subcatrows" id="<?php echo $all_cat->cat_id.','.$deals->id; ?>"><a href="#" id="<?php echo $all_cat->cat_id.','.$deals->id; ?>"><?php echo $deals->cat_name; ?></a></li>
+
+
+                        <?php } ?>
+           
+
+           </ul>
+            
+
+            </li>
+
+
+
+                                        <?php }
+
+                                }
+                        ?>
+
+
+                    </ul>
+                </div>
+                <div class="clear"></div>
+                <div class="box">
+                    <select name="brandbyOffer" id="brandbyOffer">
+                        <option value="">Brand</option>
+
+                        <?php foreach($all_brand as $brandbyOffer) { ?>
+                        <option value="<?php echo $brandbyOffer->id; ?>"><?php echo $brandbyOffer->company_name; ?></option>
+                        <?php } ?>
+                        
+                    </select>
+                </div>
+                <div class="clear"></div>
+               <!-- <div class="box ">
+                    <select class="fontawesome-select">
+                        <option value="">Star Marks</option>
+                        <option>XYXZZ</option>
+                    </select>
+                </div>
+                <div class="clear"></div>
+                <div class="box category-list savings-list">
+                    <h3>Savings</h3>
+                    <ul>
+                        <li><a href="#"><span>123</span>5% Off or more</a></li>
+                        <li><a href="#"><span>134</span>10% Off or more</a></li>
+                        <li><a href="#"><span>154</span>20% Off or more</a></li>
+                        <li><a href="#"><span>155</span>30% Off or more</a></li>
+                        <li><a href="#"><span>120</span>40% Off or more</a></li>
+                        <li><a href="#"><span>130</span>50% Off or more</a></li>
+                    </ul>
+                </div> -->
+
+
+  <!-- AJAX BEGIN -->
+
+      <script type="text/javascript">
+    $(document).ready(function(){
+
+
+        $('#nav > li.all_catrowsMain > a').click(function(e){
+    if ($(this).attr('class') != 'active'){
+      $('#nav li ul').slideUp();
+       
+       var allcat_id = $(this).attr("cat_val");
+
+       $.ajax({
+
+                type:"post",
+                url:"<?php echo site_url(); ?>/index.php/deal-search/",
+                data:"category_id="+allcat_id,
+                success:function(data)
+                {
+                     $('#deal_search_results').html(data);
+
+                    get_data();
+                }
+
+            });
+
+      $(this).next().slideToggle();
+      $('#nav li a').removeClass('active');
+      $(this).addClass('active');
+    }
+
+    e.preventDefault();
+  });
+
+
+
+        $('#subnav > li.all_subcatrows > a').click(function(e){
+    
+
+        var allsubcat_id = this.id;
+        var array_rec = allsubcat_id.split(',');
+
+
+          //console.log(array_rec[0]);
+           //console.log(array_rec[1]);
+
+           $.ajax({
+
+                type:"post",
+                url:"<?php echo site_url(); ?>/index.php/deal-search/",
+                data:'side_categoryid='+array_rec[0]+'&side_subcatid='+array_rec[1],
+                success:function(data)
+                {
+                     $('#deal_search_results').html(data);
+                    
+                }
+
+            });
+
+           e.preventDefault();
+  });
+        
+
+
+/*
+
+        $(".all_catrowsMain").click(function(e){
+            //$(this).find(".subcat-dropdown").toggle(500);
+            $(this).find(".subcat-dropdown").show();
+
+
+             var allcat_id = this.id;
+
+
+            //alert(allcat_id);
+
+            $.ajax({
+
+                type:"post",
+                url:"<?php echo site_url(); ?>/index.php/deal-search/",
+                data:"category_id="+allcat_id,
+                success:function(data)
+                {
+                     $('#deal_search_results').html(data);
+                    
+                }
+
+            });
+
+           
+            e.preventDefault();
+        });
+
+
+
+     $('.all_subcatrows').click(function(){
+
+
+
+            var allsubcat_id = this.id;
+
+            var array_rec = allsubcat_id.split(',');
+
+
+           //console.log(array_rec[0]);
+            //console.log(array_rec[1]);
+
+
+            //alert(allsubcat_id);
+
+            $.ajax({
+
+                type:"post",
+                url:"<?php echo site_url(); ?>/index.php/deal-search/",
+                data:'side_categoryid='+array_rec[0]+'&side_subcatid='+array_rec[1],
+                success:function(data)
+                {
+                     $('#deal_search_results').html(data);
+                    
+                }
+
+            });
+
+        });
+
+*/
+
+
+       
+
+    });
+
+
+
+
+</script>

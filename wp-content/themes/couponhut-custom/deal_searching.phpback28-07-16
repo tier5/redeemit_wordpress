@@ -1,0 +1,136 @@
+<?php
+/*Template Name: deal searching
+*/
+
+if(isset($_POST) && !empty($_POST))
+{
+$query_builder = "SELECT ro.*, rp.price_range_id, rp.status, rp.created_by FROM reedemer_offer AS ro INNER JOIN reedemer_partner_settings AS rp ON ro.created_by = rp.created_by WHERE ro.status = 1 ";
+
+	if(isset($_POST['cat_id']) && !empty($_POST['cat_id']) && $_POST['cat_id'] != "-")
+	{
+		$query_builder.=" && ro.cat_id = ".$_POST['cat_id'];
+	}
+
+	if(isset($_POST['sub_cat_id']) && !empty($_POST['sub_cat_id']) && $_POST['sub_cat_id'] != "-")
+	{
+		$query_builder.=" && ro.subcat_id = ".$_POST['sub_cat_id'];
+	}
+
+	if(isset($_POST['min_value']) && !empty($_POST['min_value']) )
+	{
+		$query_builder.=" && ro.pay_value >= ".$_POST['min_value'];
+	}
+
+	if(isset($_POST['max_value']) && !empty($_POST['max_value']) )
+	{
+		$query_builder.=" && ro.pay_value <= ".$_POST['max_value'];
+	}
+
+	if(isset($_POST['curr_value_calculate']) && !empty($_POST['curr_value_calculate']) && $_POST['curr_value_calculate'] != "-" )
+	{
+		$query_builder.=" && ro.value_calculate = ".$_POST['curr_value_calculate'];
+	}
+
+	if($_POST['cat_id'] == "-")
+	{
+		$query_builder.=" GROUP BY rand()";
+	}
+
+	$query_builder = $wpdb->get_results($query_builder ,ARRAY_A);
+
+	if(count($query_builder) > 0)
+	{
+		$result["status"] = "true";
+		$result["res_data"] = "";
+		$v = 1;
+		$max_val = 0;
+		$min_val = 0;
+		$k = 0;
+foreach ($query_builder as  $val1) {
+		$result["res_data"].='<div class="col-md-4 col-sm-4 product-view">';
+
+		$result["res_data"].='<a href="'.home_url().'/index.php/deal-details/?offer='.$val1["id"].'">';
+		
+		$result["res_data"].='<img src="'.$val1["offer_image_path"].'" alt="img01" class="img-responsive" /><div class="product">';
+
+		if(strlen($val1["offer_description"]) > 35)
+		{
+			$desc = substr($val1["offer_description"],0,35).'...';
+		}else
+		{
+			$desc = $val1["offer_description"];
+		}
+
+		$result["res_data"].='<div class="product-title">'.$desc.'</div>
+		<div class="product-savings">';
+		
+		if($val1["discount"] > 0) {
+			$result["res_data"].='<span class="savings">';
+				$prc_val = ($val1["pay_value"]/$val1["retails_value"]); 
+				$percent_friendly = number_format( $prc_val * 100, 2 ) . '%';
+				$tot_per = 100 - $percent_friendly;
+				$result["res_data"].=$tot_per."%OFF";
+			$result["res_data"].= '</span>
+			<span class="pricesection">
+				<color>';
+			$result["res_data"].="$".$val1["retails_value"].'</color>';
+			$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+			}else { 
+
+			$result["res_data"].='<span class="pricesection">';
+			$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+			} 
+
+	
+		$result["res_data"].= '</div><div class="col-expires"><i class="fa fa-map-marker" aria-hidden="true"></i>FBBC Hillcrest  (1.8 miles)</div></div></a></div>';
+		
+		if(isset($_POST['max_value']) && !empty($_POST['max_value']))
+			{
+				$max_val = $_POST['max_value'];
+			}
+
+
+		if($val1['pay_value'] >= $max_val )
+		{
+			$max_val = $val1['pay_value'];
+		}
+
+
+
+		if($k == 0)
+		{
+			$k = 1;
+			$min_val = $val1['pay_value'];
+			if(isset($_POST['min_value']) && !empty($_POST['min_value']))
+			{
+				$min_val = $_POST['min_value'];
+			}
+		}
+
+
+		if($val1['pay_value'] < $min_val )
+		{
+			$min_val = $val1['pay_value'];
+		}
+
+		if($v%3 == 0)
+		{
+			$result["res_data"].='<div class="clearboth">&nbsp</div>';
+		}
+		$v++;
+	}
+
+		$result['max_val'] = $max_val; 
+		$result['min_val'] = $min_val;
+	
+	}else
+	{
+		$result["status"] = "false";
+	}
+	$result["post_data"] = $_POST;
+	echo json_encode($result);
+
+}
+?>

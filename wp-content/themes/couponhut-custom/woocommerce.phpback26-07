@@ -1,0 +1,56 @@
+<?php get_header(); ?>
+<div class="clear"></div> 
+        <div class="container">
+            <div class="row">
+               <?php woocommerce_content(); ?>
+
+<div class="clear"></div>
+            </div>
+        </div>
+  
+<!-- Product Grid End -->
+<div class="clear"></div>
+<!-- Footer Start -->  
+<footer class="footer">
+      <div class="container">
+        <div class="row">
+            <div class="col-md-12 col-sm-12">
+                <div class="col-md-3 col-sm-3">
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <img src="<?php bloginfo('template_directory'); ?>/images/app-store.png" alt="img01" class="img-responsive" />
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <img src="<?php bloginfo('template_directory'); ?>/images/google-play.png" alt="img01" class="img-responsive" />
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <img src="<?php bloginfo('template_directory'); ?>/images/rar.png" alt="img01" class="img-responsive img-rar" />
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-3 col-sm-3 foot-section">
+                     <?php dynamic_sidebar( 'footer-section01' ); ?>
+                </div>
+                <div class="col-md-3 col-sm-3 foot-section">
+                     <?php dynamic_sidebar( 'footer-section02' ); ?>
+                </div>
+                <div class="col-md-3 col-sm-3 foot-section">
+                    <?php dynamic_sidebar( 'footer-section03' ); ?>
+                </div>
+                <div class="col-md-3 col-sm-3 foot-section">
+                    <?php dynamic_sidebar( 'footer-section04' ); ?>
+                </div>
+            </div>
+            <div class="clear"></div>
+            <div class="col-md-12">
+                <p class="copyright">© 2016 redeemar, Inc.. All rights reserved.</p>
+            <div>
+        </div>
+      </div>
+</footer>
+<!-- Footer End --> 
+<?php wp_footer(); ?>
+</body>
+
+    <script src="<?php bloginfo('template_directory'); ?>/js/bootstrap.min.js"></script>
+</html>

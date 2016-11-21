@@ -1,0 +1,684 @@
+<?php
+/*Template Name: deal searching
+*/
+
+if(isset($_POST) && !empty($_POST))
+{
+$query_builder = "SELECT ro.*, rp.price_range_id, rp.status, rp.created_by FROM reedemer_offer AS ro INNER JOIN reedemer_partner_settings AS rp ON ro.created_by = rp.created_by WHERE ro.status = 1 ";
+	
+	
+$map_query = "SELECT * FROM reedemer_offer AS ofr, users as usr, reedemer_partner_settings as ps WHERE ofr.created_by = usr.id && ofr.created_by = ps.created_by";	
+
+	if(isset($_POST['cat_id']) && !empty($_POST['cat_id']) && $_POST['cat_id'] != "-")
+	{
+		$query_builder.=" && ro.cat_id = ".$_POST['cat_id'];
+		$map_query .="&& ro.cat_id = ".$_POST['cat_id'];
+	}
+
+	if(isset($_POST['sub_cat_id']) && !empty($_POST['sub_cat_id']) && $_POST['sub_cat_id'] != "-")
+	{
+		$query_builder.=" && ro.subcat_id = ".$_POST['sub_cat_id'];
+		$map_query .="&& ro.cat_id = ".$_POST['sub_cat_id'];
+	}
+
+	if(isset($_POST['min_value']) && !empty($_POST['min_value']) )
+	{
+		$query_builder.=" && ro.pay_value >= ".$_POST['min_value'];
+		$map_query .="&& ro.pay_value >= ".$_POST['min_value'];
+	}
+
+	if(isset($_POST['max_value']) && !empty($_POST['max_value']) )
+	{
+		$query_builder.=" && ro.pay_value <= ".$_POST['max_value'];
+		$map_query .="&& ro.pay_value <= ".$_POST['max_value'];
+	}
+
+	/*if(isset($_POST['curr_value_calculate']) && !empty($_POST['curr_value_calculate']) && $_POST['curr_value_calculate'] != "-" )
+	{
+		$query_builder.=" && ro.value_calculate = ".$_POST['curr_value_calculate'];
+	}*/	
+	
+	if(isset($_POST['curr_percent']) && !empty($_POST['curr_percent']) && $_POST['curr_percent'] != "-" )
+	{
+		if($_POST['curr_percent'] == '5p' || $_POST['curr_percent'] == '10p' || $_POST['curr_percent'] == '20p' || $_POST['curr_percent'] == '30p'){
+			$query_builder.=" && ro.discount > 0";
+		}else if($_POST['curr_percent'] == 10 || $_POST['curr_percent'] == 20 || $_POST['curr_percent'] == 30 || $_POST['curr_percent'] == 31){
+			if($_POST['curr_percent'] == 31){
+				
+				$query_builder.=" && ro.discount >".$_POST['curr_percent'];
+		
+			}else {
+				$query_builder.=" && ro.discount <=".$_POST['curr_percent'];
+			}
+		}
+	}
+
+	if($_POST['cat_id'] == "-")
+	{
+		$query_builder.=" GROUP BY rand()";
+	}
+	
+	$query_builder = $wpdb->get_results($query_builder ,ARRAY_A);	
+
+	if(count($query_builder) > 0)
+	{
+		$result["status"] = "true";
+		$result["res_data"] = "";
+		$v = 1;
+		$max_val = 0;
+		$min_val = 0;
+		$k = 0;
+		
+		$result["res_data"].='<div class="cdeal_search_results"></div>';
+			
+		$result["res_data"].='<div class="location-map" id="location-map">';
+			
+					/*$offer_id = $_GET['offer'];
+					$sql_locations = $wpdb->get_results("SELECT * FROM `reedemer_offer` WHERE status = 1 && id = '$offer' "); */
+
+					foreach($map_query as $maps) {
+
+						$lat= $maps->lat; //latitude
+						$lng= $maps->lng; //longitude
+						$address= getaddress($lat,$lng);
+
+						$markers[] = array(
+						"$address",
+						$maps->lat,
+						$maps->lng
+						);
+					}
+					//print_r($markers);
+				
+				/*<div id="map_wrapper">
+				<div id="map_canvas" class="mapping"></div>
+			</div>*/
+
+
+			$result["res_data"].="<style>
+
+				#map_wrapper {
+					height: 400px;
+				}
+
+				#map_canvas {
+					width: 100%;
+					height: 430px;
+				}
+			.map_ico {
+				margin-bottom: 60px;
+				max-height: 400px;
+			}
+
+
+			</style>
+
+			<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+			<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyD84iwE1qE0EPyKXMS8zBj3J_4J1Q9fP3w'></script>
+
+				
+			<script>
+
+				function initialize() {
+					var map;
+					var bounds = new google.maps.LatLngBounds();
+					var mapOptions = {
+						mapTypeId: "roadmap",
+						center: new google.maps.LatLng(52.791331, -1.918728), // somewhere in the uk BEWARE center is required
+						zoom: 20,
+					};
+
+					// Display a map on the page
+					map = new google.maps.Map(document.getElementById("location-map"), mapOptions);
+					map.setTilt(45);
+
+					// Multiple Markers
+					var markers = <?php echo json_encode( $markers ); ?>;
+
+					// Display multiple markers on a map
+					var infoWindow = new google.maps.InfoWindow();
+					var marker, i;
+
+					// Loop through our array of markers & place each one on the map
+					for (i = 0; i < markers.length; i++) {
+						var position = new google.maps.LatLng(markers[i][1], markers[i][2]);
+						bounds.extend(position);
+						marker = new google.maps.Marker({
+							position: position,
+							map: map,
+							title: markers[i][0]  
+						});
+
+
+
+						// Allow each marker to have an info window
+						/*google.maps.event.addListener(marker, 'mouseover', (function (marker, i) {
+							return function () {
+						var mar_img = markers[i][5];
+						var mar_name = markers[i][4];		
+						html = mar_img + '<br>' + mar_name;
+
+								infoWindow.setContent(html);
+								infoWindow.open(map, marker);
+							}
+						})(marker, i));
+
+					    google.maps.event.addListener(marker, 'mouseout', (function (marker, i) {
+							return function () {
+								//infoWindow.setContent(markers[i][0]);
+								infoWindow.close();
+							}
+						})(marker, i));*/
+
+						// Automatically center the map fitting all markers on the screen
+						map.fitBounds(bounds);
+					}
+
+					//Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+					var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function (event) {
+						this.setZoom(3);
+						google.maps.event.removeListener(boundsListener);
+					});
+
+				}
+				google.maps.event.addDomListener(window, 'load', initialize);
+
+
+			</script>";
+				
+		$result["res_data"].= '</div>';
+		
+foreach ($query_builder as  $val1) {
+		$prc_val = ($val1["pay_value"]/$val1["retails_value"]); 
+		$percent_friendly = number_format( $prc_val * 100, 2 );
+		$tot_per = 100 - $percent_friendly;
+	
+		if($_POST['curr_percent'] == '5p') {			
+			
+			/*$dis_val = ($new_dis_query->pay_value/$new_dis_query->retails_value);
+			$dis_friendly = number_format( $dis_val * 100, 2 ) . '%';
+			$dis_tot_per = 100 - $dis_friendly;	*/		
+			
+			if($tot_per > 1) {
+				$result["res_data"].='<div id="deal_search_results"></div>';
+				
+				$result["res_data"].='<div class="location-map"></div>';
+				
+				$result["res_data"].='<div class="col-md-4 col-sm-4 product-view">';
+
+				$result["res_data"].='<a href="'.home_url().'/index.php/deal-details/?offer='.$val1["id"].'">';
+
+				$result["res_data"].='<img src="'.$val1["offer_image_path"].'" alt="img01" class="img-responsive" /><div class="product">';
+
+				if(strlen($val1["offer_description"]) > 35)
+				{
+					$desc = substr($val1["offer_description"],0,35).'...';
+				}else
+				{
+					$desc = $val1["offer_description"];
+				}
+
+				$result["res_data"].='<div class="product-title">'.$desc.'</div>
+				<div class="product-savings">';
+
+				if($val1["discount"] > 0) {
+					$result["res_data"].='<span class="savings">';
+				
+				$result["res_data"].=$tot_per."%OFF";
+				$result["res_data"].= '</span>
+				<span class="pricesection">
+					<color>';
+				$result["res_data"].="$".$val1["retails_value"].'</color>';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				}else { 
+
+				$result["res_data"].='<span class="pricesection">';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				} 
+
+
+			$result["res_data"].= '</div><div class="col-expires"><i class="fa fa-map-marker" aria-hidden="true"></i>FBBC Hillcrest  (1.8 miles)</div></div></a></div>';
+
+			if(isset($_POST['max_value']) && !empty($_POST['max_value']))
+				{
+					$max_val = $_POST['max_value'];
+				}
+
+
+			if($val1['pay_value'] >= $max_val )
+			{
+				$max_val = $val1['pay_value'];
+			}
+
+
+
+			if($k == 0)
+			{
+				$k = 1;
+				$min_val = $val1['pay_value'];
+				if(isset($_POST['min_value']) && !empty($_POST['min_value']))
+				{
+					$min_val = $_POST['min_value'];
+				}
+			}
+
+
+			if($val1['pay_value'] < $min_val )
+			{
+				$min_val = $val1['pay_value'];
+			}
+
+			if($v%3 == 0)
+			{
+				$result["res_data"].='<div class="clearboth">&nbsp</div>';
+			}
+			$v++;
+			}
+		}
+		else if($_POST['curr_percent'] == '10p') {			
+			
+			/*$dis_val = ($new_dis_query->pay_value/$new_dis_query->retails_value);
+			$dis_friendly = number_format( $dis_val * 100, 2 ) . '%';
+			$dis_tot_per = 100 - $dis_friendly;	*/		
+			
+			if($tot_per > 10) {
+				$result["res_data"].='<div class="col-md-4 col-sm-4 product-view">';
+
+				$result["res_data"].='<a href="'.home_url().'/index.php/deal-details/?offer='.$val1["id"].'">';
+
+				$result["res_data"].='<img src="'.$val1["offer_image_path"].'" alt="img01" class="img-responsive" /><div class="product">';
+
+				if(strlen($val1["offer_description"]) > 35)
+				{
+					$desc = substr($val1["offer_description"],0,35).'...';
+				}else
+				{
+					$desc = $val1["offer_description"];
+				}
+
+				$result["res_data"].='<div class="product-title">'.$desc.'</div>
+				<div class="product-savings">';
+
+				if($val1["discount"] > 0) {
+					$result["res_data"].='<span class="savings">';
+				
+				$result["res_data"].=$tot_per."%OFF";
+				$result["res_data"].= '</span>
+				<span class="pricesection">
+					<color>';
+				$result["res_data"].="$".$val1["retails_value"].'</color>';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				}else { 
+
+				$result["res_data"].='<span class="pricesection">';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				} 
+
+
+			$result["res_data"].= '</div><div class="col-expires"><i class="fa fa-map-marker" aria-hidden="true"></i>FBBC Hillcrest  (1.8 miles)</div></div></a></div>';
+
+			if(isset($_POST['max_value']) && !empty($_POST['max_value']))
+				{
+					$max_val = $_POST['max_value'];
+				}
+
+
+			if($val1['pay_value'] >= $max_val )
+			{
+				$max_val = $val1['pay_value'];
+			}
+
+
+
+			if($k == 0)
+			{
+				$k = 1;
+				$min_val = $val1['pay_value'];
+				if(isset($_POST['min_value']) && !empty($_POST['min_value']))
+				{
+					$min_val = $_POST['min_value'];
+				}
+			}
+
+
+			if($val1['pay_value'] < $min_val )
+			{
+				$min_val = $val1['pay_value'];
+			}
+
+			if($v%3 == 0)
+			{
+				$result["res_data"].='<div class="clearboth">&nbsp</div>';
+			}
+			$v++;
+			}
+		}
+		else if($_POST['curr_percent'] == '20p') {			
+			
+			/*$dis_val = ($new_dis_query->pay_value/$new_dis_query->retails_value);
+			$dis_friendly = number_format( $dis_val * 100, 2 ) . '%';
+			$dis_tot_per = 100 - $dis_friendly;	*/		
+			
+			if($tot_per > 20) {
+				$result["res_data"].='<div class="col-md-4 col-sm-4 product-view">';
+
+				$result["res_data"].='<a href="'.home_url().'/index.php/deal-details/?offer='.$val1["id"].'">';
+
+				$result["res_data"].='<img src="'.$val1["offer_image_path"].'" alt="img01" class="img-responsive" /><div class="product">';
+
+				if(strlen($val1["offer_description"]) > 35)
+				{
+					$desc = substr($val1["offer_description"],0,35).'...';
+				}else
+				{
+					$desc = $val1["offer_description"];
+				}
+
+				$result["res_data"].='<div class="product-title">'.$desc.'</div>
+				<div class="product-savings">';
+
+				if($val1["discount"] > 0) {
+					$result["res_data"].='<span class="savings">';
+				
+				$result["res_data"].=$tot_per."%OFF";
+				$result["res_data"].= '</span>
+				<span class="pricesection">
+					<color>';
+				$result["res_data"].="$".$val1["retails_value"].'</color>';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				}else { 
+
+				$result["res_data"].='<span class="pricesection">';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				} 
+
+
+			$result["res_data"].= '</div><div class="col-expires"><i class="fa fa-map-marker" aria-hidden="true"></i>FBBC Hillcrest  (1.8 miles)</div></div></a></div>';
+
+			if(isset($_POST['max_value']) && !empty($_POST['max_value']))
+				{
+					$max_val = $_POST['max_value'];
+				}
+
+
+			if($val1['pay_value'] >= $max_val )
+			{
+				$max_val = $val1['pay_value'];
+			}
+
+
+
+			if($k == 0)
+			{
+				$k = 1;
+				$min_val = $val1['pay_value'];
+				if(isset($_POST['min_value']) && !empty($_POST['min_value']))
+				{
+					$min_val = $_POST['min_value'];
+				}
+			}
+
+
+			if($val1['pay_value'] < $min_val )
+			{
+				$min_val = $val1['pay_value'];
+			}
+
+			if($v%3 == 0)
+			{
+				$result["res_data"].='<div class="clearboth">&nbsp</div>';
+			}
+			$v++;
+			}
+		}
+		else if($_POST['curr_percent'] == '30p') {			
+			
+			/*$dis_val = ($new_dis_query->pay_value/$new_dis_query->retails_value);
+			$dis_friendly = number_format( $dis_val * 100, 2 ) . '%';
+			$dis_tot_per = 100 - $dis_friendly;	*/		
+			
+			if($tot_per > 30) {
+				$result["res_data"].='<div class="col-md-4 col-sm-4 product-view">';
+
+				$result["res_data"].='<a href="'.home_url().'/index.php/deal-details/?offer='.$val1["id"].'">';
+
+				$result["res_data"].='<img src="'.$val1["offer_image_path"].'" alt="img01" class="img-responsive" /><div class="product">';
+
+				if(strlen($val1["offer_description"]) > 35)
+				{
+					$desc = substr($val1["offer_description"],0,35).'...';
+				}else
+				{
+					$desc = $val1["offer_description"];
+				}
+
+				$result["res_data"].='<div class="product-title">'.$desc.'</div>
+				<div class="product-savings">';
+
+				if($val1["discount"] > 0) {
+					$result["res_data"].='<span class="savings">';
+				
+				$result["res_data"].=$tot_per."%OFF";
+				$result["res_data"].= '</span>
+				<span class="pricesection">
+					<color>';
+				$result["res_data"].="$".$val1["retails_value"].'</color>';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				}else { 
+
+				$result["res_data"].='<span class="pricesection">';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				} 
+
+
+			$result["res_data"].= '</div><div class="col-expires"><i class="fa fa-map-marker" aria-hidden="true"></i>FBBC Hillcrest  (1.8 miles)</div></div></a></div>';
+
+			if(isset($_POST['max_value']) && !empty($_POST['max_value']))
+				{
+					$max_val = $_POST['max_value'];
+				}
+
+
+			if($val1['pay_value'] >= $max_val )
+			{
+				$max_val = $val1['pay_value'];
+			}
+
+
+
+			if($k == 0)
+			{
+				$k = 1;
+				$min_val = $val1['pay_value'];
+				if(isset($_POST['min_value']) && !empty($_POST['min_value']))
+				{
+					$min_val = $_POST['min_value'];
+				}
+			}
+
+
+			if($val1['pay_value'] < $min_val )
+			{
+				$min_val = $val1['pay_value'];
+			}
+
+			if($v%3 == 0)
+			{
+				$result["res_data"].='<div class="clearboth">&nbsp</div>';
+			}
+			$v++;
+			}
+		}
+		else if($_POST['curr_percent'] == 10 || $_POST['curr_percent'] == 20 || $_POST['curr_percent'] == 30 || $_POST['curr_percent'] == 31){
+				$result["res_data"].='<div class="col-md-4 col-sm-4 product-view">';
+
+				$result["res_data"].='<a href="'.home_url().'/index.php/deal-details/?offer='.$val1["id"].'">';
+
+				$result["res_data"].='<img src="'.$val1["offer_image_path"].'" alt="img01" class="img-responsive" /><div class="product">';
+
+				if(strlen($val1["offer_description"]) > 35)
+				{
+					$desc = substr($val1["offer_description"],0,35).'...';
+				}else
+				{
+					$desc = $val1["offer_description"];
+				}
+
+				$result["res_data"].='<div class="product-title">'.$desc.'</div>
+				<div class="product-savings">';
+
+				if($val1["discount"] > 0) {
+					$result["res_data"].='<span class="savings">';
+				
+				$result["res_data"].='$'.$val1["discount"]." OFF";
+				$result["res_data"].= '</span>
+				<span class="pricesection">
+					<color>';
+				$result["res_data"].="$".$val1["retails_value"].'</color>';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				}else { 
+
+				$result["res_data"].='<span class="pricesection">';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				} 
+
+
+			$result["res_data"].= '</div><div class="col-expires"><i class="fa fa-map-marker" aria-hidden="true"></i>FBBC Hillcrest  (1.8 miles)</div></div></a></div>';
+
+			if(isset($_POST['max_value']) && !empty($_POST['max_value']))
+				{
+					$max_val = $_POST['max_value'];
+				}
+
+
+			if($val1['pay_value'] >= $max_val )
+			{
+				$max_val = $val1['pay_value'];
+			}
+
+
+
+			if($k == 0)
+			{
+				$k = 1;
+				$min_val = $val1['pay_value'];
+				if(isset($_POST['min_value']) && !empty($_POST['min_value']))
+				{
+					$min_val = $_POST['min_value'];
+				}
+			}
+
+
+			if($val1['pay_value'] < $min_val )
+			{
+				$min_val = $val1['pay_value'];
+			}
+
+			if($v%3 == 0)
+			{
+				$result["res_data"].='<div class="clearboth">&nbsp</div>';
+			}
+			$v++;
+		}
+		else {
+				
+			
+				$result["res_data"].='<div class="col-md-4 col-sm-4 product-view">';
+
+				$result["res_data"].='<a href="'.home_url().'/index.php/deal-details/?offer='.$val1["id"].'">';
+
+				$result["res_data"].='<img src="'.$val1["offer_image_path"].'" alt="img01" class="img-responsive" /><div class="product">';
+
+				if(strlen($val1["offer_description"]) > 35)
+				{
+					$desc = substr($val1["offer_description"],0,35).'...';
+				}else
+				{
+					$desc = $val1["offer_description"];
+				}
+
+				$result["res_data"].='<div class="product-title">'.$desc.'</div>
+				<div class="product-savings">';
+
+				if($val1["discount"] > 0) {
+					$result["res_data"].='<span class="savings">';
+				
+				$result["res_data"].=$tot_per."%OFF";
+				$result["res_data"].= '</span>
+				<span class="pricesection">
+					<color>';
+				$result["res_data"].="$".$val1["retails_value"].'</color>';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				}else { 
+
+				$result["res_data"].='<span class="pricesection">';
+				$result["res_data"].="$".$val1["pay_value"].'</span>';
+
+				} 
+
+
+			$result["res_data"].= '</div><div class="col-expires"><i class="fa fa-map-marker" aria-hidden="true"></i>FBBC Hillcrest  (1.8 miles)</div></div></a></div>';
+
+			if(isset($_POST['max_value']) && !empty($_POST['max_value']))
+				{
+					$max_val = $_POST['max_value'];
+				}
+
+
+			if($val1['pay_value'] >= $max_val )
+			{
+				$max_val = $val1['pay_value'];
+			}
+
+
+
+			if($k == 0)
+			{
+				$k = 1;
+				$min_val = $val1['pay_value'];
+				if(isset($_POST['min_value']) && !empty($_POST['min_value']))
+				{
+					$min_val = $_POST['min_value'];
+				}
+			}
+
+
+			if($val1['pay_value'] < $min_val )
+			{
+				$min_val = $val1['pay_value'];
+			}
+
+			if($v%3 == 0)
+			{
+				$result["res_data"].='<div class="clearboth">&nbsp</div>';
+			}
+			$v++;
+			
+		}
+	
+		
+	}
+
+		$result['max_val'] = $max_val; 
+		$result['min_val'] = $min_val;
+	
+	}else
+	{
+		$result["status"] = "false";
+	}
+	$result["post_data"] = $_POST;
+	echo json_encode($result);
+
+}
+?>

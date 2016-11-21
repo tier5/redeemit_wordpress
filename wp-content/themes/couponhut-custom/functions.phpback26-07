@@ -1,0 +1,154 @@
+<?php if ( ! defined( 'ABSPATH' ) ) { die( 'Direct access forbidden.' ); }
+/*add_action( 'wp_enqueue_scripts', 'ssd_theme_enqueue_styles' );
+function ssd_theme_enqueue_styles() {
+
+	wp_enqueue_style( 'child-styles', get_stylesheet_directory_uri() . '/style.css', array('ssd_owl-carousel-css', 'ssd_font-awesome-css', 'ssd_icomoon-css', 'ssd_videojs-css', 'ssd_bigvideo-css', 'ssd_master-css', 'ssd_fw-theme-ie'), '1.0');
+
+} */
+
+
+
+add_action( 'after_setup_theme', 'woocommerce_support' );
+function woocommerce_support() {
+    add_theme_support( 'woocommerce' );
+}
+
+
+
+
+
+function register_custom_menus()
+    {
+
+        register_nav_menus(array(
+
+            'top-menu' => __('Top Menu'),
+            'top-menu-logedin' => __('Top Menu Loged In'),
+            'main-primary-menu' => __('Main Primary Menu')
+
+            ));
+    
+    }
+
+
+add_action('init', 'register_custom_menus');
+
+
+
+function reedemar_footer_section_widget_init()
+	{
+
+		register_sidebar( array(
+
+        'name'          => __( 'Footer Section01', 'reedemar' ),
+
+        'id'            => 'footer-section01',
+
+        'description'   => __( 'Appears in the footer section of the site.', 'reedemar' ),
+
+        'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+
+        'after_widget'  => '</aside>',
+
+        'before_title'  => '<h3 class="widget-title">',
+
+        'after_title'   => '</h3>',
+
+    ) );
+
+
+		register_sidebar( array(
+
+        'name'          => __( 'Footer Section02', 'reedemar' ),
+
+        'id'            => 'footer-section02',
+
+        'description'   => __( 'Appears in the footer section of the site.', 'reedemar' ),
+
+        'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+
+        'after_widget'  => '</aside>',
+
+        'before_title'  => '<h3 class="widget-title">',
+
+        'after_title'   => '</h3>',
+
+    ) );
+
+
+
+
+		register_sidebar( array(
+
+        'name'          => __( 'Footer Section03', 'reedemar' ),
+
+        'id'            => 'footer-section03',
+
+        'description'   => __( 'Appears in the footer section of the site.', 'reedemar' ),
+
+        'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+
+        'after_widget'  => '</aside>',
+
+        'before_title'  => '<h3 class="widget-title">',
+
+        'after_title'   => '</h3>',
+
+    ) );
+
+
+
+		register_sidebar( array(
+
+        'name'          => __( 'Footer Section04', 'reedemar' ),
+
+        'id'            => 'footer-section04',
+
+        'description'   => __( 'Appears in the footer section of the site.', 'reedemar' ),
+
+        'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+
+        'after_widget'  => '</aside>',
+
+        'before_title'  => '<h3 class="widget-title">',
+
+        'after_title'   => '</h3>',
+
+    ) );
+
+
+	}	
+
+	add_action( 'widgets_init', 'reedemar_footer_section_widget_init' );
+
+add_action('init', 'myStartSession', 1);
+add_action('wp_logout', 'myEndSession');
+add_action('wp_login', 'myEndSession');
+
+function myStartSession() {
+    if(!session_id()) {
+        session_start();
+    }
+}
+
+function myEndSession() {
+    session_destroy ();
+}
+
+function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+  $theta = $lon1 - $lon2;
+  $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+  $dist = acos($dist);
+  $dist = rad2deg($dist);
+  $miles = $dist * 60 * 1.1515;
+  $unit = strtoupper($unit);
+
+  if ($unit == "K") {
+	return ($miles * 1.609344);
+  } else if ($unit == "N") {
+	  return ($miles * 0.8684);
+	} else {
+		return $miles;
+	  }
+}

@@ -1,0 +1,176 @@
+Version 1.0 Released
+	1) Home Page Video functionality Change
+	2) Function changed
+	3) style changed
+version 1.1 Released
+	1) Home page location work done when locatiion is changed
+	2) on home page deals are showing from one partner
+	3) on delas details page similar add come from same partner
+Version 1.2 Released
+	1. Search on enter location has been done
+	2. Nearest location
+
+Version 1.2.1 Released
+	1. Fixed merge conflict on Home.php under theme
+
+Version 1.3 Released
+	1. Home map zoom fixed
+	2. All nearest location functionality has done
+Version 1.3.1 Released
+	1.Changes for home page auto complete search
+	2. My deals change password section
+Version 1.3.2 Released
+	1. Custom css modified for deals page font-size reduce
+	2. Home page category search modified
+Version 1.3.3 Released
+	1.Search section for summerdeals is done
+	2.sign in message change done
+	3.home page blog slider arrow is fixed 
+	4.Deal details page autocomplete search changes 
+Version 1.4 Released
+	1. Header Video Part modified
+	2. footer video part js modified
+	3. custom css modified
+Version 2.0 Released
+	1. Reslove all Merge conflicts
+Version 2.1 Released
+	1. Home Page Category now fetch one deal from each Partner
+	2. On top pics section also now fetch one deal from each Partner
+	3. Onclick location done
+	4. Sign in page message changed
+	5. "published=true" sql function updated
+Version 2.2 Released
+        1.Home page left side category offer listing count as per serch value done.
+	2.Home page top pics latest offer upadate is done .
+	3.Home page search for location select by enter from auto complete list done.
+	4.home page Search on  enter with category and location value done
+	5.Back button is for showing last page is  done      
+version 2.3 Released		 
+	1. Changes for home page category listing
+Version 2.4 Released
+        1.changes for home page search done
+	2. changes for deals page search done 
+	3. changes for deal details search done
+	4.changes for home page top pics bar small logo img .	 
+
+Version 2.5 Released
+	1.changes for differents size of logo on all offer pages.
+	3. changes for css 
+Version 2.6 Released
+	1.Changes div structure design for right top logo in every deals.
+Version 2.7 Released
+        1. changes for discount in all pages deals.
+	2. changes all logo image format to .png
+	3. changes for search for all pages 
+Version 2.8 Released
+	1. changes for meta tag search.
+	2. changes for location search state, zip code, locations.
+	3. changes for mouse click on search drop down option search results. 
+Version 2.9 Released
+	1. Sub Sub Category Search Done
+	2. location search modified
+	3. State code added in location search
+	4. on deals page Off, discount, savings panel work done
+	5. on summer special page Off, discount, savings panel work done
+	6. Chnage password Modified
+	7. phone number make numeric
+	8. home page video play & pause button working
+	9. Home page bottom video is dynamic now
+ 
+Version 3.0 Released
+	1. changes for deals page category section done 
+	2. Modification for home page middle video done 
+
+Version 3.1 Released
+	1. On Home page category visibility done
+	2. On home location are same come one time
+Version 3.2 Released
+	1.Changes on home page location search state code.
+	2.Changes on deals page search with sub-sub category.
+	3.Changes on deal off panel for selecting single  category.
+	4.Changes for Header vedio functionality.   
+Version 3.3 Released
+	1.Changes on home page Video section
+	2.Add home page loader
+	3.changes on deals page header search cat, subcat, sub sub cat with left offer panel.
+	4.chnages with left category subcat, sub sub cat panel search with
+	 offer, discount, savings panel count search done.   
+Version 3.4 Released
+	1.changes for the tag search and tag search on deals page .
+	2 changes for new css.
+Version 3.5 Released
+	1.Changes for tag search on home page deals page with multi action.
+	2.Changes on offer listing as per distance.
+	3.changes on deals page offer listing as per distance.
+	4.Deals page oferpanel lsting count as per tag search product count done.  
+Version 3.6 Released
+	1. Changes for serach
+	2. Changes on Deals page as per brand
+	3. Changes on Delas page left panel for brands
+	4. Changes on discount section 
+	5. Changes on menu for logged in users
+	6. custom.css modified
+	7. meta search done in all pages
+	8. Deal Details page search done
+Version 3.6.1 Released
+	1. Deals Details page modified
+	2. Home page map api key changed
+Version 3.7 Releasd
+	1. Deals details page modified
+
+version 3.8 Released 
+	1. changes for deal details page more offer  count.
+	2. Changes for offer panel select action code.
+Version 3.9 Released
+	1.changes for minimum distance done.
+	2.Changes for new  tag search is done.
+Version 4.0 Released
+	1.Changes for meta tag search with every keyword  done .
+	2.Changes for location duplicate sugestion solve done.
+	3.serch sugestion box not to be shown if there is no sugestion done.
+Version 4.0.1 Released
+	1.Changes for text ovelapping and location duplicate.
+version 4.1 Relesed
+	1.Changes for video link from the wp backend to frontend.
+	2.Search with keyword changes done.
+	3.Changes logo size in home page, deals page and deals details page done.   
+Version 4.1.1 Released
+	1. Cnanges for keyword search and brand search on the home page done.
+Version 4.2 Released
+	1.Changes for search on the deals and deal details page for brand and keywords done.
+	2.Changes for deal details page right side brand single product done.
+	3.changes on registration validation done.  
+Version 4.3 Released
+	1. Changes for user registration from front end and login from mobile done.
+	2. changes for offer filter selection. 
+Version 4.3.1 Released
+	1.Changes for ondemand design .
+Version 4.4 Released
+	1.Changes for home page and deals  search  fields .
+	2.changes for homepage on demand section.
+	3.chanegs for home page header video section done. 
+Version 4.4.1 Released
+	1. changes for design in deal details page. 
+Version 4.5 Released 
+	1.Changes for expired offers don't show in front end done. 
+	2.Green Button on the header video done.
+Version 4.6 Released
+	1.Changes on off panel.
+Version 4.7 Released
+	1.Chnages for home page category dispaly order done.
+Version 4.8 Released
+	1.Changes for deal details page right panel offer title character limit.
+Version 4.9 Released
+	1.Changes for sub sub category done on the deals listing page.
+Version 5.0 Released
+	1.Add Membership Template
+	2.Add Payment Form
+Version 5.0.1
+	1.change in header
+Version 6.0
+	1.change in pay offer on deal details
+	2.change in payment form
+Version 6.0.1
+	1.change in payment
+Version 6.1 Released
+	1.Changes on offerprice round off is done .
