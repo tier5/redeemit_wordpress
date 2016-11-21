@@ -5025,3 +5025,7 @@ margin: 0;
 margin-bottom: 20px;
 }
 }
+/********new changes **********/
+#suggesstion-box-cat {
+    position: fixed;
+}

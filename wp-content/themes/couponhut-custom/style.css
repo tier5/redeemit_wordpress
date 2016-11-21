@@ -128,18 +128,21 @@ ul{
 }
 
 .logo img{
-    width: auto;
+   /* width: auto;*/
+    
+    width: 230px !important;
+
 }
 
 .middle-bar form{
     text-align: right;
 }
 
-.middle-bar .form-inline .form-group{
+.middle-bar .form-group{
     position: relative;
 }
 
-.middle-bar .form-inline .form-group img{
+.middle-bar .form-group img{
     position: absolute;
     transform: translate(-50%, -50%);
     top: 50%;
@@ -147,18 +150,18 @@ ul{
     width: 15px;
 }
 
-.middle-bar .form-inline .form-control{
+.middle-bar .form-control{
     border: 1px solid #000;
     border-radius: 0;
     padding-left: 20px;
     font-size: 17px;
 }
 
-.middle-bar .form-inline .form-control.search{
+.middle-bar .form-control.search{
     width: 425px;
 }
 
-.middle-bar .form-inline input[type='submit']{
+.middle-bar input[type='submit']{
     background: #C89978 url(images/4.png) no-repeat center;
     border: 1px solid #C89978;
     vertical-align: bottom;
@@ -1190,5 +1193,12 @@ margin-bottom: 10px;
 .top-bar ul li.username-link:hover .fa.uparw{
     display: none;
 }
-
+.form-group 
+{
+    float: left;
+}
+    
+#suggesstion-box-loc {
+    position: absolute;
+}
 /* New Changes End*/

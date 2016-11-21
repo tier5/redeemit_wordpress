@@ -103,8 +103,8 @@ else { wp_title('',true); } ?></title>
         			<div class="logo"><a href="<?php echo home_url(); ?>"><img src="<?php echo get_template_directory_uri(); ?>/images/logo.png" alt="redeemar" title="redeemar" width="190px" height="54px"></a></div>
         		</div>
         		<div class="col-md-9 col-sm-9">
-				<form class="form-inline">
-				<div class="form-group">
+				
+				<div class="form-group" style="width:50%">
         		<input class="search-txt form-control search" id="deal_cat" type="text" placeholder="How can we help you" value=""  />
         		<img src="<?php echo get_template_directory_uri(); ?>/images/3.png" class="img-responsive">
         		</div>
@@ -116,7 +116,7 @@ else { wp_title('',true); } ?></title>
 					<input type="hidden" id="deal_brand" value="<?php echo(isset($_GET['deal_brandname']) && $_GET['deal_brandname']!='')?$_GET['deal_brandname']:'';?>">
 					<input type="hidden" id="deal_created_by" value="<?php echo(isset($_GET['deal_created_by']) && $_GET['deal_created_by']!='')?$_GET['deal_created_by']:'';?>">
 				<div id="suggesstion-box-cat"></div>
-			</div>
+			
 				<?php 
 					if($_COOKIE['location_input'] != '') {
 						$default_loc = $_COOKIE['location_input'];
@@ -127,7 +127,7 @@ else { wp_title('',true); } ?></title>
 				?>
 				
 				
-				<div class="form-group">
+				<div class="form-group" style="width:30%">
 				<input class="location form-control" id="deal_loc" type="text" placeholder="Enter Your Location" value="<?php echo $default_loc;?>" name="deal_loc" onload="putCookie()"/>
 				<img src="<?php echo get_template_directory_uri(); ?>/images/2.png" class="img-responsive">
 			    </div>
@@ -136,7 +136,7 @@ else { wp_title('',true); } ?></title>
 				<input type="hidden" id="deal_created"/>
 				<input type="hidden" id="deal_created_fill" value="<?php echo $default_loc;?>"/>
 
-				<div class="form-group">
+				<div class="form-group"  style="width:20%">
 				<?php if(is_page('deals') || is_page('summer-special')) { ?>
 
 				<button class="search-btn-new" name="search_deal_btn" id="search_deal_btn" type="submit" value="Go"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -148,7 +148,8 @@ else { wp_title('',true); } ?></title>
 				</div>
 				<div id="suggesstion-box-loc"></div>
         		</div>
-        		</form>
+        		
+        </div>
         </div>
     </div>
     <div class="main-menu">
