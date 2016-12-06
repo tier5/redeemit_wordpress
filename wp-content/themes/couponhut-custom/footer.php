@@ -356,4 +356,34 @@ $("#search_deal_btn").click(function(){
 });
 	
 </script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var banner_height = $('.banner-content').outerHeight();
+		$('.banner-img').css('height',banner_height);
 
+		var deal_left_height = $('.deal-left').height();
+		$('.excl-deal img').css('height',deal_left_height);
+
+		var summer_essen_height = $('.excl-deal-summer').height();
+		$('.summer-essen').css('height',summer_essen_height);
+
+
+		/* TOP DEALS Tabs */
+		$('.topdeals ul li').click(function(){
+			$(this).addClass('active');
+			$('.topdeals ul li').not($(this)).removeClass('active');
+			var liClass = $(this).attr('class').split(' ')[0];
+			if($("#" + liClass).length){
+				$('#'+liClass).addClass("showproduct");
+			}
+
+			$('.product-section').each(function(){
+				if($(this).attr('id') != liClass){
+					$(this).removeClass("showproduct");
+				}
+			});
+		});
+		/* TOP DEALS Tabs */
+
+	});
+</script>
