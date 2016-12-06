@@ -13,11 +13,7 @@ if(isset($_POST['uer_location'])) {
 }else {
 	$default_loc = 'Yonkers';
 }
-/*if (!is_numeric($default_loc)) {
 
-$default_loc = explode(',',$default_loc);
-$default_loc = $default_loc[0];	
-}*/
 $min_distance = 150;
 
 $address_dis = $default_loc;
@@ -72,7 +68,7 @@ if($offers_databycat)
 		 	
 		?>		
            <!-- IMAGE PANEL DIV OF CATEGORY TAB BASE BEGIN -->
-       <div class="col-md-3 col-sm-3 img-column product-view">
+       <div class="col-md-3 col-sm-3 img-column product-view test">
 					<a href="<?php echo home_url(); ?>/index.php/deal-details/?offer=<?php echo $databycat->id; ?>">
 						<div class="home-search-wrap">
 					<?php $img_logo = $wpdb->get_results("select logo_name from reedemer_logo where reedemer_id = '".$databycat->created_by."' && default_logo = 1");
@@ -213,7 +209,7 @@ if($offers_databycat)
 if($_POST['cat_id']=='-1')
 {
 
- /* $offers_rec="SELECT rc.parent_id, rc.cat_name, rc.status, rc.visibility, ro.*, rp.price_range_id, rp.status, rp.created_by FROM reedemer_category AS rc, reedemer_offer AS ro, reedemer_partner_settings AS rp WHERE rc.id=ro.cat_id AND rc.status='1' AND ro.status='1' AND ro.created_by=rp.created_by ORDER BY ro.id DESC LIMIT 4"; */	
+
 	
 $offers_rec="select max(id) as id, distance from (select *, SQRT(POW(69.1 * (latitude - $lat_dis), 2) + POW(69.1 * ($lon_dis - longitude) * COS(latitude / 57.3), 2)) AS distance from reedemer_offer where status = 1 && published = 'true' && end_date >= CURDATE()) x group by`created_by` HAVING distance < $min_distance order by distance ASC LIMIT 4";
 	
@@ -1018,8 +1014,6 @@ $lastkey = $_POST['dealkey'];
 '%" .strtolower($_POST['dealkey']). "%') && status = 1 && published = 'true' && end_date >= CURDATE())x group by`created_by` HAVING distance < $min_distance order by distance ASC LIMIT 4";
 		
 
-//$partner4 = "select max(id) as id, distance from (select *, SQRT(POW(69.1 * (latitude - $lat_dis), 2) + POW(69.1 * ($lon_dis - longitude) * COS(latitude / 57.3), 2)) AS distance from reedemer_offer where FIND_IN_SET('$lasttag', more_information) && status = 1 && published = 'true' ) x group by`created_by` HAVING distance < $min_distance order by distance ASC LIMIT 4";
-
 
  //echo $partner4;
 
@@ -1173,32 +1167,9 @@ echo '<h4>Search Results</h4>
 	 
 	 
 	 
-/*$gt_cats = $wpdb->get_results("SELECT * FROM reedemer_offer_categories where cat_id = $deal_catid");
-//$partner2 =[];	 
-foreach($gt_cats as $gt_cat) {
-	print_r($gt_cat->offer_id);
-echo $partner2 .= "select max(id) as id, distance from (select *, SQRT(POW(69.1 * (latitude - $lat_dis), 2) + POW(69.1 * ($lon_dis - longitude) * COS(latitude / 57.3), 2)) AS distance from reedemer_offer where id = '".$gt_cat->offer_id."' && status = 1 && published = 'true' ) x group by`created_by` HAVING distance < $min_distance order by distance ASC LIMIT 4;";
-	
-	
-}
 
-$val_prt = explode(";",$partner2);*/
-
-//if(count($val_prt) > 0) {	 
-//echo count($val_prt);	
 	
-//$k_count = 0;	
-	 
-//for($i=0; $i<=count($val_prt); $i++)	 {
 	
-//$partner_offers2 = $wpdb->get_results($val_prt[$i]); 	
-	
-//foreach($partner_offers2 as $poffers2)
-//{
-	
-	//if($partner_offers2 > 0) {
-	//	$k_count++;	
-	//}
 
 $total_res = $wpdb->get_results("SELECT DISTINCT ofr_cat.offer_id,ro.*, rp.price_range_id, rp.status, rp.created_by, usr.location, ofr_cat.cat_id, ofr_cat.offer_id, SQRT(POW(69.1 * (latitude - $lat_dis), 2) + POW(69.1 * ($lon_dis - longitude) * COS(latitude / 57.3), 2)) AS distance FROM reedemer_offer AS ro INNER JOIN reedemer_partner_settings AS rp ON ro.created_by = rp.created_by INNER JOIN users AS usr ON usr.id = ro.created_by INNER JOIN reedemer_offer_categories as ofr_cat ON ro.id = ofr_cat.offer_id  WHERE ro.status = 1 && ro.published = 'true' && ro.end_date >= CURDATE() && ofr_cat.cat_id = $deal_catid group by ro.created_by HAVING distance < $min_distance ORDER BY distance ASC");
 $k_count= count($total_res);

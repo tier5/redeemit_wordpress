@@ -1201,4 +1201,18 @@ margin-bottom: 10px;
 #suggesstion-box-loc {
     position: absolute;
 }
+.col-expires {
+    color: #999898;
+    font-size: 14px;
+    display: inline-block;
+    /*position: absolute;*/
+    bottom: 10px;
+}
+.col-expires img.img-responsive {
+    height: 40px;
+    width: 30px;
+}
+.product-section.showproduct {
+    width: 100%;
+}
 /* New Changes End*/
